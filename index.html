@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>WISE AYAN // Birthday Protocol</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Birthday Protocol home">
+      <span class="brand-mark">W<span>A</span></span>
+      <span class="brand-copy">HYDROSPEC<span>GIFT SYSTEMS / 2026</span></span>
+    </a>
+    <div class="status"><span class="status-dot"></span> SECURE SESSION <span class="status-divider">/</span> <span id="clock">00:00:00</span></div>
+  </header>
+
+  <main>
+    <section class="hero panel">
+      <div class="eyebrow"><span class="eyebrow-line"></span> CLASSIFIED BIRTHDAY DROP <span class="eyebrow-line"></span></div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="micro-label">RECIPIENT IDENTIFIED</p>
+          <h1>HEY,<br><span class="lime">WISE AYAN</span><span class="cursor">_</span></h1>
+          <p class="intro">You've been selected for a top-secret birthday operation. One gift. One password. Absolutely no suspicious activity. Probably.</p>
+          <div class="hero-tags"><span>MISSION 020</span><span>PRIORITY: BIRTHDAY</span><span>ACCESS: RESTRICTED</span></div>
+          <a class="button button-lime" href="#mission">START THE MISSION <span>↘</span></a>
+        </div>
+        <div class="cube-scene" aria-label="Decorative pixel-style gift crate">
+          <div class="scanline"></div>
+          <div class="cube-shadow"></div>
+          <div class="gift-cube">
+            <div class="cube-top"></div><div class="cube-front"><span class="cube-symbol">?</span><span class="cube-label">DROP<br>020</span></div><div class="cube-side"></div>
+          </div>
+          <div class="float-tag tag-top">ITEM DETECTED <b>01</b></div>
+          <div class="float-tag tag-bottom"><span class="mini-dot"></span> LOCKED CRATE</div>
+          <div class="crosshair crosshair-one">+</div><div class="crosshair crosshair-two">+</div>
+          <span class="scene-coord">23°42' N<br>90°21' E</span>
+        </div>
+      </div>
+      <div class="hero-footer"><span>HYDROSPEC LABS <b>© 2026</b></span><span>DO NOT PANIC. THIS IS NORMAL.</span></div>
+    </section>
+
+    <section class="mission-section" id="mission">
+      <div class="section-heading"><span class="section-index">01 / OBJECTIVE</span><h2>UNLOCK THE DROP<span class="lime">.</span></h2><p>Prove you're the correct player to claim this item.</p></div>
+      <div class="mission-grid">
+        <div class="panel objective-card">
+          <div class="card-top"><span>MISSION BRIEF</span><span class="tiny-badge">ACTIVE</span></div>
+          <div class="big-number">01<span>/01</span></div>
+          <h3>THE PASSWORD PUZZLE</h3>
+          <p>A strange message was found inside the crate. Solve the clue, enter the password, and see what happens.</p>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-label"><span>MISSION PROGRESS</span><span id="progressText">0%</span></div>
+        </div>
+        <div class="panel puzzle-card">
+          <div class="terminal-bar"><span class="terminal-lights"><i></i><i></i><i></i></span><span>ayan_access.exe</span><span>v1.0.20</span></div>
+          <div class="terminal-body">
+            <p class="terminal-line"><span class="prompt">root@birthday:~$</span> decrypt clue --recipient=wise-ayan</p>
+            <div class="clue-box"><span class="clue-label">ENCRYPTED CLUE / 001</span><p>I have no face, but I hiss.<br>I have no hands, but I explode.<br>Get too close and your build is gone.<br><b>What am I?</b></p></div>
+            <form id="answerForm" autocomplete="off">
+              <label for="answer">ENTER PASSWORD</label>
+              <div class="answer-row"><span class="input-prefix">&gt;_</span><input id="answer" name="answer" type="text" placeholder="TYPE YOUR ANSWER" maxlength="32" spellcheck="false" required><button class="button button-lime" type="submit">SUBMIT ↗</button></div>
+              <p class="feedback" id="feedback" aria-live="polite">Awaiting input. Hint: green, blocky, and extremely explosive.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal-section" id="reveal">
+      <div class="section-heading"><span class="section-index">02 / REWARD</span><h2>THE LOOT ROOM<span class="lime">.</span></h2><p>Authorized access required. Birthday protocol activates on October 20.</p></div>
+      <div class="panel loot-panel" id="lootPanel">
+        <div class="loot-lock" id="lootIcon">▣</div>
+        <div class="loot-content">
+          <p class="micro-label" id="lootStatus">REWARD VAULT / LOCKED</p>
+          <h3 id="lootTitle">NOT SO FAST, PLAYER.</h3>
+          <p id="lootDescription">Solve the password puzzle above first. Your reward is waiting inside.</p>
+          <div id="codeArea" class="code-area hidden">
+            <span class="code-label">YOUR REDEEM CODE</span>
+            <div class="code-value" id="redeemCode">XXXXX-XXXXX-XXXXX-XXXXX-XXXXX</div>
+            <button class="button button-lime" id="copyButton" type="button">COPY CODE <span>▣</span></button>
+            <p class="copy-feedback" id="copyFeedback" aria-live="polite"></p>
+          </div>
+          <div class="countdown-box"><span class="countdown-label">TIME UNTIL DROP</span><strong id="countdown">CALCULATING...</strong></div>
+        </div>
+        <div class="loot-stamp">BIRTHDAY<br>EDITION<br><span>20·10·26</span></div>
+      </div>
+    </section>
+
+    <section class="final-note panel">
+      <div class="note-icon">!</div><div><p class="micro-label">A MESSAGE FROM YOUR FRIEND</p><h2>HAPPY BIRTHDAY, AYAN.</h2><p>May your worlds be big, your builds survive creepers, and your next year be legendary. Enjoy the gift, bro.</p></div><div class="pixel-heart">♥</div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>DESIGNED WITH <b>CHAOS</b> BY YOUR FRIEND</span><span>HYDROSPEC // BIRTHDAY PROTOCOL <b>v1.0</b></span></footer>
+  <script src="script.js"></script>
+</body>
+</html>
