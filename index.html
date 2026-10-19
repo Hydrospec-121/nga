@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d18">
+  <meta name="description" content="A quiet threshold between now and what comes next.">
+  <title>The Midnight Portal</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #080d18;
+      --night-blue: #101a2b;
+      --ivory: #f5f0e6;
+      --muted: #a9afbd;
+      --gold: #d9bd82;
+      --gold-light: #f1dfb8;
+      --ice: #9cbfd8;
+      --line: rgba(234, 224, 203, .16);
+      --glass: rgba(18, 27, 43, .57);
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--night); }
+    body {
+      min-height: 100vh; min-height: 100svh; margin: 0; overflow-x: hidden;
+      background:
+        radial-gradient(ellipse at 50% 39%, rgba(56, 75, 105, .22), transparent 44%),
+        radial-gradient(ellipse at 15% 85%, rgba(112, 87, 57, .10), transparent 36%),
+        linear-gradient(145deg, #080d18 0%, #0c1423 52%, #080c15 100%);
+      color: var(--ivory); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: grid; place-items: center; padding: 28px 18px; isolation: isolate;
+    }
+    body::before, body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+    }
+    body::before {
+      background: radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(1, 4, 10, .42) 100%);
+    }
+    body::after {
+      opacity: .25;
+      background-image: linear-gradient(rgba(211, 221, 239, .025) 1px, transparent 1px), linear-gradient(90deg, rgba(211, 221, 239, .025) 1px, transparent 1px);
+      background-size: 74px 74px;
+      mask-image: radial-gradient(ellipse at center, black, transparent 78%);
+    }
+    #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+    .ambient {
+      position: fixed; width: min(60vw, 720px); aspect-ratio: 1; border-radius: 50%; z-index: -1;
+      filter: blur(65px); opacity: .12; pointer-events: none;
+      background: radial-gradient(circle, rgba(161, 190, 218, .45), transparent 68%);
+      animation: ambient-drift 20s ease-in-out infinite alternate;
+    }
+    .ambient.one { top: -28%; left: -17%; }
+    .ambient.two { right: -24%; bottom: -40%; background: radial-gradient(circle, rgba(212, 174, 111, .45), transparent 68%); animation-delay: -9s; }
+    .portal {
+      width: min(100%, 900px); position: relative; text-align: center; padding: clamp(28px, 5vw, 58px) clamp(16px, 5vw, 58px) 24px;
+      animation: arrive 1.2s cubic-bezier(.2,.7,.2,1) both;
+    }
+    .orbit {
+      position: absolute; left: 50%; top: 46%; width: min(78vw, 670px); aspect-ratio: 1;
+      transform: translate(-50%, -50%); border: 1px solid rgba(210, 194, 159, .085); border-radius: 50%;
+      pointer-events: none; z-index: -1;
+    }
+    .orbit::before, .orbit::after {
+      content: ""; position: absolute; border-radius: 50%; border: 1px solid rgba(164, 195, 218, .08);
+      inset: 8%;
+    }
+    .orbit::after { inset: 18%; border-color: rgba(210, 194, 159, .06); }
+    .orbit-mark {
+      position: absolute; width: 5px; height: 5px; border-radius: 50%; top: 12%; left: 22%;
+      background: var(--gold-light); box-shadow: 0 0 16px rgba(241, 223, 184, .75);
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 12px; margin: 0 0 26px;
+      color: var(--gold); font-size: 10px; font-weight: 650; letter-spacing: .27em; text-transform: uppercase;
+    }
+    .eyebrow::before, .eyebrow::after { content: ""; width: 25px; height: 1px; background: linear-gradient(90deg, transparent, rgba(217,189,130,.75)); }
+    .eyebrow::after { transform: rotate(180deg); }
+    h1 {
+      margin: 0; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      font-size: clamp(42px, 7vw, 76px); font-weight: 400; line-height: 1.08; letter-spacing: -.045em;
+      text-wrap: balance; text-shadow: 0 5px 40px rgba(0,0,0,.18);
+    }
+    h1 em { font-weight: 400; color: var(--gold-light); }
+    .intro {
+      max-width: 430px; margin: 20px auto 0; color: var(--muted); font-size: clamp(13px, 1.7vw, 15px);
+      line-height: 1.8; font-weight: 400; text-wrap: balance;
+    }
+    .countdown {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(8px, 1.8vw, 16px);
+      max-width: 640px; margin: clamp(34px, 6vw, 54px) auto 0;
+      transition: opacity .7s ease, transform .7s ease, filter .7s ease;
+    }
+    .unit {
+      min-width: 0; padding: clamp(15px, 2.7vw, 24px) 6px clamp(13px, 2.2vw, 19px);
+      border: 1px solid var(--line); border-radius: 14px;
+      background: linear-gradient(145deg, rgba(255,255,255,.065), rgba(255,255,255,.018));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 12px 36px rgba(0,0,0,.10);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    }
+    .number {
+      display: block; color: #f4efe5; font-size: clamp(28px, 5vw, 47px); font-weight: 350;
+      line-height: 1.05; letter-spacing: -.055em; font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+    .unit-label { display: block; margin-top: 10px; color: #8f9aab; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
+    .status {
+      min-height: 20px; display: flex; justify-content: center; align-items: center; gap: 9px;
+      margin-top: 29px; color: #aeb5c1; font-size: 9px; font-weight: 650; letter-spacing: .22em;
+    }
+    .status-dot { width: 6px; height: 6px; flex: 0 0 auto; border-radius: 50%; background: #c8a96d; box-shadow: 0 0 12px rgba(217,189,130,.6); }
+    .status.open .status-dot { background: #dce9cf; box-shadow: 0 0 14px rgba(220,233,207,.85); }
+    .status.open { color: var(--gold-light); }
+    .enter-wrap { min-height: 68px; margin-top: 23px; display: flex; justify-content: center; align-items: flex-start; }
+    .enter {
+      display: inline-flex; align-items: center; justify-content: center; gap: 13px; min-height: 52px;
+      padding: 0 24px; border: 1px solid rgba(255,244,218,.65); border-radius: 9px;
+      background: linear-gradient(120deg, #e6d2a7, #c7a66c 54%, #ead9b3);
+      color: #17140e; font: inherit; font-size: 10px; font-weight: 800; letter-spacing: .15em;
+      text-decoration: none; box-shadow: 0 8px 28px rgba(199,166,108,.15), inset 0 1px 0 rgba(255,255,255,.55);
+      transition: transform .25s ease, box-shadow .25s ease, opacity .6s ease, filter .25s ease;
+    }
+    .enter[hidden] { display: none; }
+    .enter.unavailable { opacity: .52; filter: saturate(.55); cursor: not-allowed; }
+    .enter:not(.unavailable):hover { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(199,166,108,.25), inset 0 1px 0 rgba(255,255,255,.6); }
+    .enter:focus-visible { outline: 2px solid var(--ivory); outline-offset: 5px; }
+    .enter svg { width: 15px; height: 15px; }
+    .hint { min-height: 16px; margin: -5px 0 0; color: #8d96a5; font-size: 11px; }
+    .footer {
+      margin: clamp(34px, 6vw, 56px) 0 0; color: #737d8c; font-family: Georgia, serif;
+      font-size: 12px; font-style: italic; letter-spacing: .025em;
+    }
+    .footer span { color: #a89b7f; padding: 0 5px; }
+    .portal.is-open .countdown { opacity: 0; transform: translateY(-12px) scale(.985); filter: blur(5px); pointer-events: none; }
+    .portal.is-open .countdown[hidden] { display: none; }
+    .portal.is-open .intro { color: #c1c5cd; }
+    .portal.is-open .enter { animation: button-appear .9s .15s both; }
+    .portal.is-open .eyebrow { color: var(--gold-light); }
+    .portal.is-open .hint:not(.show) { visibility: hidden; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes ambient-drift { from { transform: translate3d(-1%, 0, 0) scale(.96); } to { transform: translate3d(2%, 4%, 0) scale(1.08); } }
+    @keyframes button-appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 480px) {
+      body { padding: 18px 10px; }
+      .portal { padding: 35px 8px 20px; }
+      .eyebrow { margin-bottom: 22px; letter-spacing: .2em; }
+      .intro { max-width: 310px; margin-top: 16px; }
+      .countdown { gap: 7px; margin-top: 32px; }
+      .unit { border-radius: 11px; padding: 16px 2px 13px; }
+      .number { font-size: clamp(25px, 7.8vw, 34px); }
+      .unit-label { font-size: 8px; letter-spacing: .11em; margin-top: 9px; }
+      .status { margin-top: 25px; font-size: 8px; }
+      .enter-wrap { margin-top: 20px; }
+      .enter { min-height: 49px; padding: 0 17px; font-size: 9px; }
+      .orbit { width: 115vw; top: 43%; }
+      .footer { margin-top: 28px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="ambient one" aria-hidden="true"></div>
+  <div class="ambient two" aria-hidden="true"></div>
+
+  <main class="portal" id="portal" aria-labelledby="headline">
+    <div class="orbit" aria-hidden="true"><span class="orbit-mark"></span></div>
+    <p class="eyebrow">A Moment in Time</p>
+    <h1 id="headline">Something <em>awaits.</em></h1>
+    <p class="intro" id="intro">The next chapter is almost ready. Stay here until the clock reaches zero.</p>
+
+    <section class="countdown" id="countdown" aria-label="Time remaining">
+      <div class="unit"><span class="number" id="days">00</span><span class="unit-label">Days</span></div>
+      <div class="unit"><span class="number" id="hours">00</span><span class="unit-label">Hours</span></div>
+      <div class="unit"><span class="number" id="minutes">00</span><span class="unit-label">Minutes</span></div>
+      <div class="unit"><span class="number" id="seconds">00</span><span class="unit-label">Seconds</span></div>
+    </section>
+
+    <div class="status" id="status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="statusText">The portal is sealed</span></div>
+    <div class="enter-wrap">
+      <a class="enter" id="enterButton" href="#" hidden>
+        <span>Enter the experience</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 12h14m-5.5-5.5L18.5 12 13 17.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <p class="hint" id="hint" aria-live="polite"></p>
+    <p class="footer">A private moment <span>·</span> Right on time</p>
+    <p class="visually-hidden" id="unlockAnnouncement" aria-live="assertive"></p>
+  </main>
+
+  <script>
+    "use strict";
+
+    // Paste your real destination URL between the quotes when ready.
+    const DESTINATION_URL = "";
+
+    // Fixed global instant: October 20, 2026 at 00:00 in Bangladesh (UTC+06:00).
+    // For a temporary development preview, change this to a timestamp in the past
+    // or future. Restore the exact value below before deployment.
+    const TARGET_TIMESTAMP = new Date("2026-10-20T00:00:00+06:00").getTime();
+
+    const portal = document.getElementById("portal");
+    const headline = document.getElementById("headline");
+    const intro = document.getElementById("intro");
+    const countdown = document.getElementById("countdown");
+    const status = document.getElementById("status");
+    const statusText = document.getElementById("statusText");
+    const enterButton = document.getElementById("enterButton");
+    const hint = document.getElementById("hint");
+    const announcement = document.getElementById("unlockAnnouncement");
+    const fields = {
+      days: document.getElementById("days"),
+      hours: document.getElementById("hours"),
+      minutes: document.getElementById("minutes"),
+      seconds: document.getElementById("seconds")
+    };
+    let isUnlocked = false;
+    let burstUntil = 0;
+
+    function destinationIsValid() {
+      if (!DESTINATION_URL.trim()) return false;
+      try {
+        const url = new URL(DESTINATION_URL);
+        return url.protocol === "https:" || url.protocol === "http:";
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function unlock() {
+      if (isUnlocked) return;
+      isUnlocked = true;
+      portal.classList.add("is-open");
+      headline.innerHTML = 'The moment <em>is here.</em>';
+      intro.textContent = "Everything is ready. Step inside when you are ready.";
+      // Let the countdown fade/blur out before removing it from layout.
+      window.setTimeout(() => countdown.setAttribute("hidden", ""), 720);
+      status.classList.add("open");
+      statusText.textContent = "The portal is open";
+      enterButton.hidden = false;
+      if (destinationIsValid()) {
+        enterButton.href = new URL(DESTINATION_URL).href;
+        enterButton.classList.remove("unavailable");
+        enterButton.removeAttribute("aria-disabled");
+        enterButton.tabIndex = 0;
+        hint.textContent = "";
+        enterButton.addEventListener("click", function (event) {
+          // Do not allow a placeholder or invalid destination to be followed.
+          if (!destinationIsValid()) {
+            event.preventDefault();
+            return;
+          }
+        });
+      } else {
+        enterButton.removeAttribute("href");
+        enterButton.classList.add("unavailable");
+        enterButton.setAttribute("aria-disabled", "true");
+        enterButton.tabIndex = 0;
+        hint.textContent = "Destination not configured yet.";
+        hint.classList.add("show");
+        enterButton.addEventListener("click", function (event) {
+          event.preventDefault();
+        });
+      }
+      announcement.textContent = "The portal is now open.";
+      burstUntil = performance.now() + 2200;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) burstUntil = 0;
+    }
+
+    function updateCountdown() {
+      // Recalculate from the absolute timestamp each tick; never decrement a counter.
+      const remainingMs = TARGET_TIMESTAMP - Date.now();
+      if (remainingMs <= 0) {
+        unlock();
+        return;
+      }
+      const totalSeconds = Math.floor(remainingMs / 1000);
+      fields.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, "0");
+      fields.hours.textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+      fields.minutes.textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+      fields.seconds.textContent = String(totalSeconds % 60).padStart(2, "0");
+    }
+
+    // Decorative canvas stars; the countdown works independently of this animation.
+    (function setupSky() {
+      const canvas = document.getElementById("sky");
+      const ctx = canvas.getContext("2d", { alpha: true });
+      if (!ctx) return;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let width = 0, height = 0, dpr = 1, stars = [], raf = 0;
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = Math.min(115, Math.max(38, Math.floor(width * height / 10500)));
+        stars = Array.from({ length: count }, () => ({
+          x: Math.random() * width, y: Math.random() * height,
+          r: Math.random() * 1.25 + .25, alpha: Math.random() * .48 + .12,
+          phase: Math.random() * Math.PI * 2, drift: (Math.random() - .5) * .12,
+          gold: Math.random() > .78
+        }));
+      }
+      function draw(now) {
+        ctx.clearRect(0, 0, width, height);
+        const reduced = reduceMotion.matches;
+        for (const s of stars) {
+          const twinkle = reduced ? 1 : .72 + Math.sin(now * .0007 + s.phase) * .28;
+          const burst = now < burstUntil ? 1 + (burstUntil - now) / 2200 * 1.8 : 1;
+          ctx.globalAlpha = Math.min(.95, s.alpha * twinkle * burst);
+          ctx.fillStyle = s.gold ? "#e6c98e" : "#c6d8e8";
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r * (now < burstUntil ? 1.15 : 1), 0, Math.PI * 2);
+          ctx.fill();
+          if (!reduced) {
+            s.y -= .025;
+            s.x += s.drift;
+            if (s.y < -2) s.y = height + 2;
+            if (s.x < -2) s.x = width + 2;
+            if (s.x > width + 2) s.x = -2;
+          }
+        }
+        // Short-lived, restrained champagne/ivory burst at unlock.
+        if (now < burstUntil) {
+          const progress = 1 - (burstUntil - now) / 2200;
+          const cx = width / 2, cy = height * .43;
+          for (let i = 0; i < 42; i++) {
+            const angle = i * 2.39996;
+            const distance = (18 + (i % 9) * 5) * progress;
+            const x = cx + Math.cos(angle) * distance;
+            const y = cy + Math.sin(angle) * distance - progress * (15 + (i % 5) * 7);
+            ctx.globalAlpha = (1 - progress) * .7;
+            ctx.fillStyle = i % 3 === 0 ? "#f5f0e6" : "#d9bd82";
+            ctx.beginPath();
+            ctx.arc(x, y, 1.1 + (i % 3) * .35, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.globalAlpha = 1;
+        if (!reduced || now < burstUntil) raf = requestAnimationFrame(draw);
+        else { ctx.clearRect(0, 0, width, height); for (const s of stars) { ctx.globalAlpha = s.alpha; ctx.fillStyle = s.gold ? "#e6c98e" : "#c6d8e8"; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill(); } ctx.globalAlpha = 1; }
+      }
+      resize();
+      if (!reduceMotion.matches) raf = requestAnimationFrame(draw);
+      else draw(0);
+      window.addEventListener("resize", () => { resize(); if (!reduceMotion.matches) { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); } else draw(0); }, { passive: true });
+      reduceMotion.addEventListener?.("change", () => { cancelAnimationFrame(raf); if (!reduceMotion.matches) raf = requestAnimationFrame(draw); else draw(0); });
+    })();
+
+    // Immediate check handles refreshes and visitors arriving after the target.
+    updateCountdown();
+    const countdownTimer = window.setInterval(() => {
+      updateCountdown();
+      if (isUnlocked) window.clearInterval(countdownTimer);
+    }, 250);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) updateCountdown();
+    });
+    window.addEventListener("pageshow", updateCountdown);
+  </script>
+</body>
+</html>
